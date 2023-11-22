@@ -10,25 +10,26 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 export class DataFormComponent implements OnInit{
 
   formulario!: FormGroup;
-cidades: any;
+  cidades: any;
 
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient) {
-
+    
   }
   ngOnInit(){
-   /* this.formulario = new FormGroup({
+
+       /* this.formulario = new FormGroup({
       nome: new FormControl(null),
       email: new FormControl(null),
       endereco: new FormGroup({
 
       })
     });*/
-
     this.formulario = this.formBuilder.group({
       nome: [null, [Validators.required, Validators.minLength(3)]],
       email: [null, [, Validators.required, Validators.email]],
+
       endereco: this.formBuilder.group({
         cep: [null, Validators.required],
         numero: [null, Validators.required],
@@ -41,23 +42,12 @@ cidades: any;
   });
 }
 
-  verificaValidTouched(campo:string) {
-    return !this.formulario.get(campo)?.valid && this.formulario.get(campo)?.touched ? true : false;
-  }
-
-  verificaEmailInvalido() {
-    if (this.formulario.controls['email'].errors) {
-      return this.formulario.controls['email'].errors['email']
-    }
-
-
-    //return !this.formulario.get(campo) && this.formulario.get(campo)?.touched;
-  }
-
+verificaValidTouched(campo: string) {
+  return !this.formulario.get(campo)?.valid && this.formulario.get(campo)?.touched ? true : false;
+}
 
   aplicaCssErro(campo:string) {
-    //console.log(this.verificaValidTouched(campo));
-    return {
+    return {      
       'has-error': this.verificaValidTouched(campo),
       'has-feedback': this.verificaValidTouched(campo)
     };
@@ -65,7 +55,11 @@ cidades: any;
 
 
 
-
+  verificaEmailInvalido() {
+    if (this.formulario.controls['email'].errors) {
+      return this.formulario.controls['email'].errors['email']
+    }    
+  }
   onSubmit(){
     console.log(this.formulario.value);
     this.http.post('https://httpbin.org/post', JSON.stringify(this.formulario.value)).subscribe(res => {
@@ -78,3 +72,13 @@ cidades: any;
     this.formulario.reset();
   }
 }
+
+
+
+   /* this.formulario = new FormGroup({
+      nome: new FormControl(null),
+      email: new FormControl(null),
+      endereco: new FormGroup({
+
+      })
+    });*/
