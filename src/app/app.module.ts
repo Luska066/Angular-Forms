@@ -13,7 +13,7 @@ import { DataFormModule } from './data-form/data-form.module';
 @NgModule({
   declarations: [
     AppComponent,
-    
+
   ],
   imports: [
     ReactiveFormsModule,
