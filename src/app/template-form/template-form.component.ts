@@ -1,6 +1,7 @@
+import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-//import { ConsultaCepService } from '../shared/services/consulta-cep.service';
+
 
 @Component({
   selector: 'app-template-form',
@@ -29,7 +30,7 @@ export class TemplateFormComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    //private cepService: ConsultaCepService
+    private cepService: ConsultaCepService
   ) { }
 
   ngOnInit() {
@@ -51,8 +52,8 @@ export class TemplateFormComponent implements OnInit {
     cep = cep.replace(/\D/g, '');
 
     if (cep != null && cep !== '') {
-     // this.cepService.consultaCEP(cep)
-      //.subscribe((dados:any) => this.populaDadosForm(dados, form));
+     this.cepService.consultaCEP(cep)
+     ?.subscribe(dados => this.populaDadosForm(dados,form))
     }
   }
 
@@ -111,7 +112,7 @@ import 'rxjs/operators'
   styleUrls: ['./template-form.component.css']
 })
 export class TemplateFormComponent implements OnInit{
-  
+
   usuario:any = {
     nome: null,
     email: null,
@@ -129,10 +130,10 @@ export class TemplateFormComponent implements OnInit{
   onSubmit(form:any){
     //console.log(form);
     //console.log(this.usuario);
-    
+
   }
   ngOnInit() {
-    
+
   }
 
   verificaValidTouched(campo: any){
@@ -142,11 +143,11 @@ export class TemplateFormComponent implements OnInit{
     return {
         'has-error': this.verificaValidTouched(campo)
     }
-    
+
   }
 
   constructor(private http: HttpClient) {
-    
+
   }
 
 
@@ -161,15 +162,15 @@ export class TemplateFormComponent implements OnInit{
         var validaCep = /^[0-9]{8}$/;
         if (validaCep.test(cep)) {
           //this.http.get(`//viacep.com.br/ws/${cep}/json`).forEach((dadosJson:any) => dadosJson).then((dados: any) => this.populaDados(cep,form))
-         
+
              fetch(`//viacep.com.br/ws/${cep}/json`)
             .then(res => res.json())
             .then(res =>  res =  this.populaDados(cep,form))
             .catch(err => console.log(err))
-          
+
         }
       }
-      
+
   }
 
   populaDados(dados: any, form: any){
