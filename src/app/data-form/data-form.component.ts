@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DropdownService } from '../shared/services/dropdown.service';
 import { EstadosBr } from '../shared/models/estados-br';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-data-form',
@@ -14,7 +15,16 @@ export class DataFormComponent implements OnInit{
 
   formulario!: FormGroup;
   cidades: any;
-  estadosBR!: EstadosBr[];
+  // estadosBR!: EstadosBr[];
+  estadosBR!: EstadosBr[]
+  cargos!: any[];
+  tecnologias!: any[];
+  newsletterOp!: any[];
+  frameworks!: ['Angular', 'React', 'Vue', 'Sencha']
+
+
+
+
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -23,7 +33,10 @@ export class DataFormComponent implements OnInit{
 
   }
   ngOnInit(){
-
+    this.cargos = this.dropdownService.getCargos();
+    this.tecnologias = this.dropdownService.getTecnologias();
+    this.newsletterOp = this.dropdownService.getNewsletter();
+    // this.estadosBR = this.dropdownService.getEstadosBR()
     this.dropdownService.getEstadosBR().subscribe((dados:any) => {
       this.estadosBR = dados
       console.log(dados);
@@ -42,9 +55,16 @@ export class DataFormComponent implements OnInit{
         bairro: [null, Validators.required],
         cidade: [null, Validators.required],
         estado: [null, Validators.required],
-    })
+    }),
+    cargo: [null],
+    tecnologias: [null],
+    newsletter: ['s'],
+    termos: [null, Validators.pattern('true')],
+    frameworks: [null]
   });
 }
+
+
 verificaEmailInvalido() {
   if (this.formulario.controls['email'].errors) {
     return this.formulario.controls['email'].errors['email']
@@ -119,6 +139,17 @@ verificaValidTouched(campo: string) {
         this.verificaValidacoesForm(controle)
     }
     })
+  }
+
+  setarCargo(){
+    const cargo =  {nome: 'Dev', nivel: 'Pleno', desc: 'Dev PL'}
+    this.formulario.get('cargo')?.setValue(cargo)
+  }
+  setarTecnologia(){
+    this.formulario.get('tecnologias')?.setValue(['java', 'javascript', 'php'])
+  }
+  compararCargos(obj1:any, obj2:any){
+    return obj1 && obj2 ? (obj1.nome === obj2.nome && obj1.nivel === obj2.nivel) : obj1 === obj2;
   }
 
   cancelar(){
