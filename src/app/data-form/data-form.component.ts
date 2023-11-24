@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DropdownService } from '../shared/services/dropdown.service';
 import { EstadosBr } from '../shared/models/estados-br';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
@@ -60,19 +60,28 @@ export class DataFormComponent implements OnInit{
     tecnologias: [null],
     newsletter: ['s'],
     termos: [null, Validators.pattern('true')],
-    frameworks: [null]
+    frameworks: this.buildFrameworks()
   });
 }
 
-
-verificaEmailInvalido() {
-  if (this.formulario.controls['email'].errors) {
-    return this.formulario.controls['email'].errors['email']
+  getFrameworksControls() {
+    return this.formulario.controls['frameworks'] ? (<FormArray>this.formulario.controls['frameworks']).controls : null;
   }
-}
-verificaValidTouched(campo: string) {
-  return !this.formulario.get(campo)?.valid && (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty) ? true : false;
-}
+  // getFrameworksControls() {
+  //   return this.formulario.get('frameworks') ? (<FormArray>this.formulario.get('frameworks')).controls : null;
+  // }
+  buildFrameworks(){
+    const values =this.frameworks.map(v => new FormControl(false))
+    return this.formBuilder.array(values)
+  }
+  verificaEmailInvalido() {
+    if (this.formulario.controls['email'].errors) {
+      return this.formulario.controls['email'].errors['email']
+    }
+  }
+  verificaValidTouched(campo: string) {
+    return !this.formulario.get(campo)?.valid && (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty) ? true : false;
+  }
 
   aplicaCssErro(campo:string) {
     return {
